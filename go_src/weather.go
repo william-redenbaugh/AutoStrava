@@ -126,16 +126,40 @@ func get_weather_hour(data []byte) WeatherHour {
 	// Parsing out the rest of the relevant JSON information. Can be safely assumed that
 	// If we have the data coming in, we have the rest of the data.
 	tempurature, err := jsonparser.GetFloat(data, "temp")
-	feels_like, err := jsonparser.GetFloat(data, "feelslike")
 	humidity, err := jsonparser.GetFloat(data, "humidity")
+	feels_like, err := jsonparser.GetFloat(data, "feelslike")
+
+	windspeed, err := jsonparser.GetFloat(data, "windspeed")
+	winddirection, err := jsonparser.GetFloat(data, "winddir")
+	UVIndex, err := jsonparser.GetFloat(data, "uvindex")
+	RainLikelyHood, err := jsonparser.GetFloat(data, "precipprob")
+	Rain, err := jsonparser.GetFloat(data, "precip")
 
 	// Saving into data structure.
 	current_weather_hour.Time = time
 	current_weather_hour.Temp = float32(tempurature)
 	current_weather_hour.PerceivedTemp = float32(feels_like)
 	current_weather_hour.Humidity = float32(humidity)
+	current_weather_hour.WindSpeed = float32(windspeed)
+	current_weather_hour.WindDirection = float32(winddirection)
+	current_weather_hour.UVIndex = float32(UVIndex)
+	current_weather_hour.RainLikelyHood = float32(RainLikelyHood)
+	current_weather_hour.Rain = float32(Rain)
 
 	return current_weather_hour
+}
+
+func get_weather_session_data(body []byte) WeatherTwoWeek {
+	var two_week_weather WeatherTwoWeek
+
+	for i := 0; i < 10; i++ {
+		indexStr := "[" + strconv.Itoa(i) + "]"
+		value, _, _, err := jsonparser.Get(body, "days", indexStr)
+		check_err(err)
+		two_week_weather[i] = get_weather_day(value)
+	}
+
+	return two_week_weather
 }
 
 /*
@@ -143,13 +167,7 @@ func get_weather_hour(data []byte) WeatherHour {
 */
 func get_weather_data() {
 	body := retrieve_weather_file()
-	value, _, _, err := jsonparser.Get(body, "days", "[0]")
 
-	todaysWeather := get_weather_day(value)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(todaysWeather.WeatherHourArray[0].Time)
+	weather_sesion := get_weather_session_data(body)
+	fmt.Println(weather_sesion[9].Date)
 }
