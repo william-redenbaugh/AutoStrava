@@ -49,6 +49,9 @@ func check_err(err error) {
 	}
 }
 
+/*
+	@brief Gets the latest weather data, writes it to file and returns the file contents as a bytearray
+*/
 func write_weather_file() []byte {
 	resp, err := http.Get("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/4512%20Middle%20Park%20Dr%2C%20San%20Jose%20CA?unitGroup=us&key=WFKDKA26EJQE8RHVEWLP7UV9K")
 	if err != nil {
@@ -149,6 +152,9 @@ func get_weather_hour(data []byte) WeatherHour {
 	return current_weather_hour
 }
 
+/*
+	@brief Gets 10 day advance on all weather data
+*/
 func get_weather_session_data(body []byte) WeatherTwoWeek {
 	var two_week_weather WeatherTwoWeek
 
