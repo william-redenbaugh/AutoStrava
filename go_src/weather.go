@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/buger/jsonparser"
 )
@@ -100,12 +101,11 @@ func get_weather_day(data []byte) WeatherDay {
 		log.Fatal(err)
 	}
 
-	for i := 0; i < 1; i++ {
-		indexStr := "[" + string(i) + "]"
+	for i := 0; i < 24; i++ {
+		indexStr := "[" + strconv.Itoa(i) + "]"
 		hour, _, _, err := jsonparser.Get(data, "hours", indexStr)
 		check_err(err)
 		current_weather_day.WeatherHourArray[i] = get_weather_hour(hour)
-
 	}
 
 	return current_weather_day
@@ -115,12 +115,25 @@ func get_weather_day(data []byte) WeatherDay {
 	@brief Get the current weather data by hour.
 */
 func get_weather_hour(data []byte) WeatherHour {
-	var current_weather_hour WeatherHour
-	time, err := jsonparser.GetString(data, "datetime")
 
-	// The current time of the hour
-	current_weather_hour.Time = time
+	// Generating WeatherHour to save.
+	var current_weather_hour WeatherHour
+
+	// Getting the date and checking to make sure we are actually parsing real data.
+	time, err := jsonparser.GetString(data, "datetime")
 	check_err(err)
+
+	// Parsing out the rest of the relevant JSON information. Can be safely assumed that
+	// If we have the data coming in, we have the rest of the data.
+	tempurature, err := jsonparser.GetFloat(data, "temp")
+	feels_like, err := jsonparser.GetFloat(data, "feelslike")
+	humidity, err := jsonparser.GetFloat(data, "humidity")
+
+	// Saving into data structure.
+	current_weather_hour.Time = time
+	current_weather_hour.Temp = float32(tempurature)
+	current_weather_hour.PerceivedTemp = float32(feels_like)
+	current_weather_hour.Humidity = float32(humidity)
 
 	return current_weather_hour
 }
@@ -138,5 +151,5 @@ func get_weather_data() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(todaysWeather.Date)
+	fmt.Println(todaysWeather.WeatherHourArray[0].Time)
 }
