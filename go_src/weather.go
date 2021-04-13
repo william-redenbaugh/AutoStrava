@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/buger/jsonparser"
 )
@@ -92,6 +93,41 @@ func retrieve_weather_file() []byte {
 }
 
 /*
+	@brief Checks to see if the saved weather data is up to date, and returns it if so
+*/
+func is_weather_latest() (bool, []byte) {
+	dat, err := ioutil.ReadFile("latest_weather.json")
+	if err != nil {
+		return false, nil
+	}
+	date, err := jsonparser.GetString(dat, "days", "[0]", "datetime")
+
+	layout := "2006-01-02T15:04:05.000Z"
+	latest_date, err := time.Parse(layout, (date + "T11:45:26.371Z"))
+
+	if err != nil {
+		return false, nil
+	}
+
+	current_date := time.Now()
+
+	current_year := int(current_date.Year())
+	current_month := int(current_date.Month())
+	current_day := int(current_date.Day())
+
+	latest_year := int(latest_date.Year())
+	latest_month := int(latest_date.Month())
+	latest_day := int(latest_date.Day())
+
+	if (current_day == latest_day) && (current_month == latest_month) && (current_year == latest_year) {
+		return true, dat
+	}
+
+	return false, nil
+	//return dat
+}
+
+/*
 	@brief Parses out the day weather data and saves.
 */
 func get_weather_day(data []byte) WeatherDay {
@@ -169,11 +205,29 @@ func get_weather_session_data(body []byte) WeatherTwoWeek {
 }
 
 /*
+	@brief To prevent us from needlessly making calls to the weather server, we only update to the latest weather data if we don't have the latest date.
+*/
+func get_current_weather_data() WeatherTwoWeek {
+
+	// Whether or not our weather data is the latest data
+	latest_weather, data := is_weather_latest()
+
+	// If so we process the struct and return the entire dataset
+	if latest_weather {
+		return get_weather_session_data(data)
+	}
+
+	// Otherwise we grab the latest weather data.
+	data = write_weather_file()
+	return get_weather_session_data(data)
+}
+
+/*
 	@brief Function that get's all the weather data and saves it
 */
 func get_weather_data() {
-	body := retrieve_weather_file()
+	//body := retrieve_weather_file()
 
-	weather_sesion := get_weather_session_data(body)
+	weather_sesion := get_current_weather_data()
 	fmt.Println(weather_sesion[9].Date)
 }
