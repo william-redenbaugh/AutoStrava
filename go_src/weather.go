@@ -42,28 +42,19 @@ type WeatherDay struct {
 type WeatherTwoWeek [14]WeatherDay
 
 /*
-	@brief Check and flags errors.
-*/
-func check_err(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-/*
 	@brief Gets the latest weather data, writes it to file and returns the file contents as a bytearray
 */
 func write_weather_file() []byte {
 	resp, err := http.Get("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/4512%20Middle%20Park%20Dr%2C%20San%20Jose%20CA?unitGroup=us&key=WFKDKA26EJQE8RHVEWLP7UV9K")
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 
 	file_handler, err := os.Create("latest_weather.json")
@@ -136,6 +127,7 @@ func get_weather_day(data []byte) WeatherDay {
 	// Parse out the current date.
 	date, err := jsonparser.GetString(data, "datetime")
 	current_weather_day.Date = date
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -143,7 +135,9 @@ func get_weather_day(data []byte) WeatherDay {
 	for i := 0; i < 24; i++ {
 		indexStr := "[" + strconv.Itoa(i) + "]"
 		hour, _, _, err := jsonparser.Get(data, "hours", indexStr)
+
 		check_err(err)
+
 		current_weather_day.WeatherHourArray[i] = get_weather_hour(hour)
 	}
 
