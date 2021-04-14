@@ -135,7 +135,6 @@ func get_weather_day(data []byte) WeatherDay {
 	for i := 0; i < 24; i++ {
 		indexStr := "[" + strconv.Itoa(i) + "]"
 		hour, _, _, err := jsonparser.Get(data, "hours", indexStr)
-
 		check_err(err)
 
 		current_weather_day.WeatherHourArray[i] = get_weather_hour(hour)
