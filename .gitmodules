@@ -1,0 +1,3 @@
+[submodule "embedded_code/BikeEstimatorEmbedded/lib/TeensyOS"]
+	path = embedded_code/BikeEstimatorEmbedded/lib/TeensyOS
+	url = git@github.com:william-redenbaugh/TeensyOS.git
