@@ -40,11 +40,11 @@ void start_led_strip_runtime(void){
 */
 static void set_matrix_color(uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b){
     // Bounds correction
-    if(x > 7 || y > 15){
+    if(x > 15 || y > 7){
         return; 
     }
 
-    int pos = 8 * y + x; 
+    int pos = 8 * x + y; 
     matrix.setPixelColor(pos, r, g, b);
 }
 
@@ -60,11 +60,24 @@ static void matrix_thread(void *parameters){
 
     matrix.setBrightness(8); 
 
-    set_matrix_color(0, 1, 100, 100, 100);
-    
     matrix.show(); 
 
     for(;;){
-        os_thread_sleep_ms(100);
+        // Sit and wait until we have all the data needed
+        while(Serial.available() < 380){
+            os_thread_sleep_ms(2);
+        }
+        //set_matrix_color(0, 1, 100, 100, 100);
+        for(int x = 0; x <= 15; x++){
+            for(int y = 0; y <= 7; y++){
+                uint8_t r = Serial.read(); 
+                uint8_t g = Serial.read(); 
+                uint8_t b = Serial.read(); 
+                set_matrix_color(x, y, r, g, b); 
+            }
+        }
+
+        matrix.show(); 
+        Serial.flush();
     }
 }

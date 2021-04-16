@@ -24,7 +24,7 @@ type LEDMatrixSerial struct {
 /*!
 @brief Easy manipulation of pixel colors
 */
-func (serial LEDMatrixSerial) setPixelColor(x uint8, y uint8, r uint8, g uint8, b uint8) {
+func (serial *LEDMatrixSerial) setPixelColor(x uint8, y uint8, r uint8, g uint8, b uint8) {
 	serial.output_color[x][y].red = r
 	serial.output_color[x][y].green = g
 	serial.output_color[x][y].blue = b
@@ -34,10 +34,7 @@ func (serial LEDMatrixSerial) setPixelColor(x uint8, y uint8, r uint8, g uint8, 
 @brief pushes up LED matrix data to serial device.
 */
 func (serial LEDMatrixSerial) update() {
-	output_signature := []byte{20, 30, 40, 50}
-	serial.serial_device.Write(output_signature)
-
-	for x := 0; x < 15; x++ {
+	for x := 0; x < 16; x++ {
 		for y := 0; y < 8; y++ {
 			pixel_array := []byte{serial.output_color[x][y].red, serial.output_color[x][y].green, serial.output_color[x][y].blue}
 			serial.serial_device.Write(pixel_array)
