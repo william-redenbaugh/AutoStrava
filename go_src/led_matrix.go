@@ -4,8 +4,8 @@ import (
 	"github.com/3nueves/serial"
 )
 
-/*
-	@brief LED matrix struct that let's us control stuff
+/*!
+@brief LED matrix struct that let's us control stuff
 */
 type RGBColor struct {
 	red   uint8
@@ -30,8 +30,8 @@ func (serial LEDMatrixSerial) setPixelColor(x uint8, y uint8, r uint8, g uint8, 
 	serial.output_color[x][y].blue = b
 }
 
-/*
-	@brief pushes up LED matrix data to serial device.
+/*!
+@brief pushes up LED matrix data to serial device.
 */
 func (serial LEDMatrixSerial) update() {
 	output_signature := []byte{20, 30, 40, 50}
@@ -45,8 +45,8 @@ func (serial LEDMatrixSerial) update() {
 	}
 }
 
-/*
-	@brief Setting up serial device, flags if there is an error
+/*!
+@brief Setting up serial device, flags if there is an error
 */
 func open_serial_port(com_port string) *serial.Port {
 	c := &serial.Config{Name: com_port, Baud: 115200}
@@ -56,8 +56,8 @@ func open_serial_port(com_port string) *serial.Port {
 	return s
 }
 
-/*
-	@brief Sets up communication with the embedded device.
+/*!
+@brief Sets up communication with the embedded device.
 */
 func setup_communication(port string) LEDMatrixSerial {
 	var led_matrix LEDMatrixSerial
