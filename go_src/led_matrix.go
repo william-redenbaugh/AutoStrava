@@ -62,6 +62,17 @@ func (serial *LEDMatrixSerial) drawChar(x uint8, y uint8, r uint8, g uint8, b ui
 		serial.setPixelColor(4+x, 3+y, r, g, b)
 		serial.setPixelColor(4+x, 4+y, r, g, b)
 
+	case '1':
+
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+
 	}
 
 }
