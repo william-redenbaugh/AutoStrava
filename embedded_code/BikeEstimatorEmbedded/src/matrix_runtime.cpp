@@ -65,18 +65,19 @@ static void matrix_thread(void *parameters){
     for(;;){
         // Sit and wait until we have all the data needed
         while(Serial.available() < 380){
-            os_thread_sleep_ms(2);
-        }
-        //set_matrix_color(0, 1, 100, 100, 100);
-        for(int x = 0; x <= 15; x++){
-            for(int y = 0; y <= 7; y++){
-                uint8_t r = Serial.read(); 
-                uint8_t g = Serial.read(); 
-                uint8_t b = Serial.read(); 
-                set_matrix_color(x, y, r, g, b); 
-            }
+            os_thread_sleep_ms(1);
         }
 
+        if((Serial.read() == 16) && (Serial.read() == 24) && (Serial.read() == 33) && (Serial.read() == 22)){
+            for(int x = 0; x <= 15; x++){
+                for(int y = 0; y <= 7; y++){
+                    uint8_t r = Serial.read(); 
+                    uint8_t g = Serial.read(); 
+                    uint8_t b = Serial.read(); 
+                    set_matrix_color(x, y, r, g, b); 
+                }
+            }
+        }
         matrix.show(); 
         Serial.flush();
     }

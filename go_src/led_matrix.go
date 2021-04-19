@@ -25,15 +25,55 @@ type LEDMatrixSerial struct {
 @brief Easy manipulation of pixel colors
 */
 func (serial *LEDMatrixSerial) setPixelColor(x uint8, y uint8, r uint8, g uint8, b uint8) {
+
+	// Out of bounds system
+	if x > 15 || y > 7 {
+		return
+	}
+
 	serial.output_color[x][y].red = r
 	serial.output_color[x][y].green = g
 	serial.output_color[x][y].blue = b
+}
+
+func (serial *LEDMatrixSerial) drawChar(x uint8, y uint8, r uint8, g uint8, b uint8, characterCh uint8) {
+
+	switch characterCh {
+	case '0':
+		// Drawing top piece
+		serial.setPixelColor(1+x, 0+y, r, g, b)
+		serial.setPixelColor(2+x, 0+y, r, g, b)
+		serial.setPixelColor(3+x, 0+y, r, g, b)
+
+		// Drawing the left side
+		serial.setPixelColor(x, 1+y, r, g, b)
+		serial.setPixelColor(x, 2+y, r, g, b)
+		serial.setPixelColor(x, 3+y, r, g, b)
+		serial.setPixelColor(x, 4+y, r, g, b)
+
+		// Drawing the bottom side
+		serial.setPixelColor(1+x, 5+y, r, g, b)
+		serial.setPixelColor(2+x, 5+y, r, g, b)
+		serial.setPixelColor(3+x, 5+y, r, g, b)
+
+		// Drawing the right side
+		serial.setPixelColor(4+x, 1+y, r, g, b)
+		serial.setPixelColor(4+x, 2+y, r, g, b)
+		serial.setPixelColor(4+x, 3+y, r, g, b)
+		serial.setPixelColor(4+x, 4+y, r, g, b)
+
+	}
+
 }
 
 /*!
 @brief pushes up LED matrix data to serial device.
 */
 func (serial LEDMatrixSerial) update() {
+
+	pixel_array := []byte{16, 24, 33, 22}
+	serial.serial_device.Write(pixel_array)
+
 	for x := 0; x < 16; x++ {
 		for y := 0; y < 8; y++ {
 			pixel_array := []byte{serial.output_color[x][y].red, serial.output_color[x][y].green, serial.output_color[x][y].blue}
