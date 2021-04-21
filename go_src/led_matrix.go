@@ -63,8 +63,53 @@ func (serial *LEDMatrixSerial) drawChar(x uint8, y uint8, r uint8, g uint8, b ui
 		serial.setPixelColor(4+x, 4+y, r, g, b)
 
 	case '1':
+		serial.setPixelColor(1+x, 1+y, r, g, b)
+		serial.setPixelColor(2+x, y, r, g, b)
+		serial.setPixelColor(3+x, y, r, g, b)
+		serial.setPixelColor(3+x, 1+y, r, g, b)
+		serial.setPixelColor(3+x, 2+y, r, g, b)
+		serial.setPixelColor(3+x, 3+y, r, g, b)
+		serial.setPixelColor(3+x, 4+y, r, g, b)
+		serial.setPixelColor(3+x, 5+y, r, g, b)
+		serial.setPixelColor(3+x, 6+y, r, g, b)
+		serial.setPixelColor(3+x, 7+y, r, g, b)
+		serial.setPixelColor(1+x, 7+y, r, g, b)
+		serial.setPixelColor(2+x, 7+y, r, g, b)
+		serial.setPixelColor(4+x, 7+y, r, g, b)
+		serial.setPixelColor(5+x, 7+y, r, g, b)
+		serial.setPixelColor(6+x, 7+y, r, g, b)
 
 	case '2':
+		// Row one
+		serial.setPixelColor(2+x, y, r, g, b)
+		serial.setPixelColor(3+x, y, r, g, b)
+		serial.setPixelColor(4+x, y, r, g, b)
+
+		// Row two
+		serial.setPixelColor(1+x, 1+y, r, g, b)
+		serial.setPixelColor(5+x, 1+y, r, g, b)
+
+		// Row Three
+		serial.setPixelColor(4+x, 2+y, r, g, b)
+		serial.setPixelColor(5+x, 2+y, r, g, b)
+
+		// Row four
+		serial.setPixelColor(3+x, 3+y, r, g, b)
+		serial.setPixelColor(4+x, 3+y, r, g, b)
+		serial.setPixelColor(2+x, 3+y, r, g, b)
+
+		// Row five
+		serial.setPixelColor(1+x, 4+y, r, g, b)
+		serial.setPixelColor(2+x, 4+y, r, g, b)
+
+		// Row Six
+		serial.setPixelColor(1+x, 5+y, r, g, b)
+
+		// Row Seven
+		serial.setPixelColor(1+x, 6+y, r, g, b)
+		serial.setPixelColor(1+x, 6+y, r, g, b)
+		serial.setPixelColor(1+x, 6+y, r, g, b)
+
 	case '3':
 	case '4':
 	case '5':
